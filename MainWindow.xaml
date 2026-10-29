@@ -1,0 +1,188 @@
+﻿<Window x:Class="Youtube_Music_Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Youtube_Music_Launcher"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Icon="/YouTube Music.png"
+        mc:Ignorable="d"
+        WindowStyle="None"    
+        Background="#1E1E1E"
+        ResizeMode="CanResize"        
+        BorderThickness="1"        
+        Title="Youtube Music Launcher" Height="810" Width="1152"
+    >
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome
+                CaptionHeight="40"
+                ResizeBorderThickness="7"
+                CornerRadius="0"
+                GlassFrameThickness="0"/>
+    </shell:WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <Style TargetType="Border">
+            <Setter Property="CornerRadius" Value="0.2"/>
+            <Setter Property="RenderOptions.EdgeMode" Value="Aliased"/>
+        </Style>
+
+        <!-- Window Control Button Style with Hover -->
+        <Style x:Key="WindowButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Width" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Custom Slider Style -->
+        <Style x:Key="ThinSliderStyle" TargetType="Slider">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto" MinHeight="5"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TickBar x:Name="TopTick" Placement="Top" Fill="#606060" Visibility="Collapsed" Grid.Row="0" Height="6"/>
+                            <Border x:Name="TrackBackground" Grid.Row="1" Background="#ffffff" BorderBrush="#ffffff" BorderThickness="1" CornerRadius="3" Height="2" Margin="5,0"/>
+                            <Track x:Name="PART_Track" Grid.Row="1">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="Slider.DecreaseLarge" Background="Red" Focusable="False" Style="{DynamicResource SliderButtonStyle}"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb x:Name="Thumb" Focusable="False" Height="20" Width="8" Margin="0,-8,0,-8">
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                                                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Border x:Name="Rectangle" Background="Red" BorderBrush="White" BorderThickness="1" CornerRadius="3"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="Slider.IncreaseLarge" Background="Transparent" Focusable="False" Style="{DynamicResource SliderButtonStyle}"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                            <TickBar x:Name="BottomTick" Placement="Bottom" Fill="#606060" Visibility="Collapsed" Grid.Row="2" Height="4"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SliderButtonStyle" TargetType="RepeatButton">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Border Background="Transparent"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="Black">
+        <Border CornerRadius="10" ClipToBounds="True" Background="Black">
+            <Grid Background="Black">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Barra de título -->
+                <Border Background="Black" Grid.Row="0"
+                    MouseDown="TitleBar_MouseDown">
+                    <DockPanel>
+                        <Image 
+                            Source="/YouTube Music.png"
+                            Width="16"
+                            Height="16" Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+                        />
+
+                        <TextBlock
+                               Foreground="White"
+                               VerticalAlignment="Center"
+                               Margin="5,0,10,0" FontSize="14"><Run Text="Youtube Music"/><Run Text=" "/><Run Text="Launche"/><Run Language="en-gb" Text="r"/></TextBlock>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" 
+                                DockPanel.Dock="Right">
+
+                            <TextBlock x:Name="WebViewVolumeLabel"
+                                Text="100%"
+                                Width="38"
+                                Foreground="White"
+                                VerticalAlignment="Center"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,0,-8,0"/>
+
+                            <Slider x:Name="WebViewVolumeSlider"
+                                Width="220"
+                                Minimum="0"
+                                Maximum="100"
+                                Value="100"
+                                TickFrequency="1"
+                                IsSnapToTickEnabled="True"
+                                IsMoveToPointEnabled="True"
+                                VerticalAlignment="Center"
+                                Margin="0,0,8,0"
+                                ToolTip="WebView2 volume"
+                                Style="{DynamicResource ThinSliderStyle}"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True" Foreground="Black"/>
+
+                            <Button Content="—"
+                                Style="{StaticResource WindowButtonStyle}"
+                                Click="Minimize_Click"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
+
+                            <Button Content="☐"
+                                Style="{StaticResource WindowButtonStyle}"
+                                Click="Maximize_Click"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
+
+                            <Button Content="X"
+                                Style="{StaticResource WindowButtonStyle}"
+                                Click="Close_Click"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- WebView -->
+                <wv2:WebView2 Name="webView"
+                              Grid.Row="1"/>
+            </Grid>
+        </Border>
+    </Grid>
+
+</Window>
